@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">BookSync</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">"Please take a picture by pressing the camera button. Once you have taken a picture, click on the Open Media Player Button to start audiobook playback from the correct position in the book.!</string>
+    <string name="openCamera">Open Camera</string>
+    <string name="openMediaPlayer">Open Media Player</string>
+    <string name="imgViewDesc">This window previews picture from camera.</string>
+    <string name="button_name">Next Image</string>
+	
+</resources>
+
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">bookSync</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="button_name">Next Image</string>
+
+</resources>
+-->
