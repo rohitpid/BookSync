@@ -133,7 +133,7 @@ public class MainActivity extends Activity {
         	Utils.bitmapToMat(photo, cvIMG);
         	Imgproc.cvtColor(cvIMG,cvIMG,Imgproc.COLOR_RGB2GRAY);
         	binarizeText textBin = new binarizeText();
-        	Mat img = textBin.getBinary(cvIMG,true);
+        	Mat img = textBin.getBINARYrotatedCROPPED(cvIMG,true);
         	photo = Bitmap.createBitmap((int) img.size().width, (int)img.size().height, Config.ARGB_8888);
         	Utils.matToBitmap(img, photo);
         	
@@ -145,11 +145,6 @@ public class MainActivity extends Activity {
         	baseApi.setImage(photo);
         	String recognizedText = baseApi.getUTF8Text();
         	System.out.println(recognizedText);
-<<<<<<< HEAD
-        	TextView text = (TextView) findViewById(R.id.textView1);
-        	txtViewer.setText(recognizedText);
-=======
->>>>>>> 1ce28235f6717e404fa231ce4c1ccec8447f3ae5
         	baseApi.end();
         	
         	// Display processed image and text
