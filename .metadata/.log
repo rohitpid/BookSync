@@ -44,3 +44,179 @@ org.eclipse.core.internal.resources.ResourceException: Invalid project descripti
 	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
 Contains: OK
 Contains: C:\Users\Wendy Nie\Dropbox\ee368_project\BookSync overlaps the workspace location: C:\Users\Wendy Nie\Dropbox\ee368_project\BookSync
+!SESSION 2013-06-03 20:42:39.519 -----------------------------------------------
+eclipse.buildId=I20120608-1400
+java.version=1.6.0_20
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_CA
+Framework arguments:  -product org.eclipse.epp.package.mobile.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.mobile.product
+
+!ENTRY org.eclipse.mylyn.tasks.ui 4 0 2013-06-03 20:43:14.245
+!MESSAGE Could not load repository template extension contributed by org.eclipse.mylyn.bugzilla.ide with connectorKind bugzilla
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-06-03 20:44:06.159
+!MESSAGE New Project Wizard failed
+!STACK 0
+java.lang.reflect.InvocationTargetException
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createProjectAsync(NewProjectCreator.java:677)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.access$0(NewProjectCreator.java:590)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator$3.execute(NewProjectCreator.java:400)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation$1.run(WorkspaceModifyOperation.java:106)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation.run(WorkspaceModifyOperation.java:118)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+Caused by: org.eclipse.core.internal.resources.ResourceException: Invalid project description.
+	at org.eclipse.core.internal.resources.Project.checkDescription(Project.java:175)
+	at org.eclipse.core.internal.resources.Project.assertCreateRequirements(Project.java:53)
+	at org.eclipse.core.internal.resources.Project.create(Project.java:287)
+	at org.eclipse.core.internal.resources.Project.create(Project.java:269)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createEclipseProject(NewProjectCreator.java:727)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createProjectAsync(NewProjectCreator.java:660)
+	... 6 more
+Root exception:
+org.eclipse.core.internal.resources.ResourceException: Invalid project description.
+	at org.eclipse.core.internal.resources.Project.checkDescription(Project.java:175)
+	at org.eclipse.core.internal.resources.Project.assertCreateRequirements(Project.java:53)
+	at org.eclipse.core.internal.resources.Project.create(Project.java:287)
+	at org.eclipse.core.internal.resources.Project.create(Project.java:269)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createEclipseProject(NewProjectCreator.java:727)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createProjectAsync(NewProjectCreator.java:660)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.access$0(NewProjectCreator.java:590)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator$3.execute(NewProjectCreator.java:400)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation$1.run(WorkspaceModifyOperation.java:106)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation.run(WorkspaceModifyOperation.java:118)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+Contains: OK
+Contains: C:\Users\Wendy Nie\Desktop\Spring 2013\ee368\Project\Git repository\BookSync overlaps the workspace location: C:\Users\Wendy Nie\Desktop\Spring 2013\ee368\Project\Git repository\BookSync
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-06-03 20:46:13.992
+!MESSAGE 
+!STACK 1
+org.eclipse.core.runtime.CoreException: Could not read from source when writing file: C:\Users\Wendy Nie\Desktop\Spring 2013\ee368\Project\Git repository\BookSync\.metadata\.lock
+	at org.eclipse.core.internal.filesystem.Policy.error(Policy.java:55)
+	at org.eclipse.core.filesystem.provider.FileStore.transferStreams(FileStore.java:78)
+	at org.eclipse.core.filesystem.provider.FileStore.copyFile(FileStore.java:222)
+	at org.eclipse.core.filesystem.provider.FileStore.copy(FileStore.java:143)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.copy(LocalFile.java:111)
+	at org.eclipse.core.filesystem.provider.FileStore.copyDirectory(FileStore.java:181)
+	at org.eclipse.core.filesystem.provider.FileStore.copy(FileStore.java:141)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.copy(LocalFile.java:111)
+	at org.eclipse.core.filesystem.provider.FileStore.copyDirectory(FileStore.java:181)
+	at org.eclipse.core.filesystem.provider.FileStore.copy(FileStore.java:141)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.copy(LocalFile.java:111)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.FileStoreAdapter.copy(FileStoreAdapter.java:68)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator$4.populate(NewProjectCreator.java:653)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createEclipseProject(NewProjectCreator.java:759)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createProjectAsync(NewProjectCreator.java:660)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.access$0(NewProjectCreator.java:590)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator$3.execute(NewProjectCreator.java:400)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation$1.run(WorkspaceModifyOperation.java:106)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation.run(WorkspaceModifyOperation.java:118)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+Caused by: java.io.IOException: The process cannot access the file because another process has locked a portion of the file
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(Unknown Source)
+	at org.eclipse.core.filesystem.provider.FileStore.transferStreams(FileStore.java:75)
+	... 19 more
+!SUBENTRY 1 org.eclipse.core.filesystem 4 271 2013-06-03 20:46:13.992
+!MESSAGE Could not read from source when writing file: C:\Users\Wendy Nie\Desktop\Spring 2013\ee368\Project\Git repository\BookSync\.metadata\.lock
+!STACK 0
+java.io.IOException: The process cannot access the file because another process has locked a portion of the file
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(Unknown Source)
+	at org.eclipse.core.filesystem.provider.FileStore.transferStreams(FileStore.java:75)
+	at org.eclipse.core.filesystem.provider.FileStore.copyFile(FileStore.java:222)
+	at org.eclipse.core.filesystem.provider.FileStore.copy(FileStore.java:143)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.copy(LocalFile.java:111)
+	at org.eclipse.core.filesystem.provider.FileStore.copyDirectory(FileStore.java:181)
+	at org.eclipse.core.filesystem.provider.FileStore.copy(FileStore.java:141)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.copy(LocalFile.java:111)
+	at org.eclipse.core.filesystem.provider.FileStore.copyDirectory(FileStore.java:181)
+	at org.eclipse.core.filesystem.provider.FileStore.copy(FileStore.java:141)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.copy(LocalFile.java:111)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.FileStoreAdapter.copy(FileStoreAdapter.java:68)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator$4.populate(NewProjectCreator.java:653)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createEclipseProject(NewProjectCreator.java:759)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createProjectAsync(NewProjectCreator.java:660)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.access$0(NewProjectCreator.java:590)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator$3.execute(NewProjectCreator.java:400)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation$1.run(WorkspaceModifyOperation.java:106)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation.run(WorkspaceModifyOperation.java:118)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-06-03 20:46:14.085
+!MESSAGE Failed to load properties file for project 'BookSync'
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-06-03 20:46:14.148
+!MESSAGE Failed to load properties file for project 'BookSync'
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-06-03 20:46:14.153
+!MESSAGE Failed to load properties file for project 'BookSync'
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-06-03 20:46:14.197
+!MESSAGE Failed to load properties file for project 'BookSync'
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-06-03 20:49:55.746
+!MESSAGE Failed to load properties file for project 'OpenCV Library - 2.4.4'
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-06-03 20:49:55.753
+!MESSAGE Failed to load properties file for project 'OpenCV Library - 2.4.4'
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-06-03 20:49:55.759
+!MESSAGE Failed to load properties file for project 'OpenCV Library - 2.4.4'
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-06-03 20:49:55.764
+!MESSAGE Failed to load properties file for project 'OpenCV Library - 2.4.4'
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-06-03 20:55:02.494
+!MESSAGE New Project Wizard failed
+!STACK 0
+java.lang.reflect.InvocationTargetException
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createProjectAsync(NewProjectCreator.java:677)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.access$0(NewProjectCreator.java:590)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator$3.execute(NewProjectCreator.java:400)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation$1.run(WorkspaceModifyOperation.java:106)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation.run(WorkspaceModifyOperation.java:118)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+Caused by: org.eclipse.core.internal.resources.ResourceException: Invalid project description.
+	at org.eclipse.core.internal.resources.Project.checkDescription(Project.java:175)
+	at org.eclipse.core.internal.resources.Project.assertCreateRequirements(Project.java:53)
+	at org.eclipse.core.internal.resources.Project.create(Project.java:287)
+	at org.eclipse.core.internal.resources.Project.create(Project.java:269)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createEclipseProject(NewProjectCreator.java:727)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createProjectAsync(NewProjectCreator.java:660)
+	... 6 more
+Root exception:
+org.eclipse.core.internal.resources.ResourceException: Invalid project description.
+	at org.eclipse.core.internal.resources.Project.checkDescription(Project.java:175)
+	at org.eclipse.core.internal.resources.Project.assertCreateRequirements(Project.java:53)
+	at org.eclipse.core.internal.resources.Project.create(Project.java:287)
+	at org.eclipse.core.internal.resources.Project.create(Project.java:269)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createEclipseProject(NewProjectCreator.java:727)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createProjectAsync(NewProjectCreator.java:660)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.access$0(NewProjectCreator.java:590)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator$3.execute(NewProjectCreator.java:400)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation$1.run(WorkspaceModifyOperation.java:106)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation.run(WorkspaceModifyOperation.java:118)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+Contains: OK
+Contains: C:\Users\Wendy Nie\Desktop\Spring 2013\ee368\Project\Git repository\BookSync overlaps the workspace location: C:\Users\Wendy Nie\Desktop\Spring 2013\ee368\Project\Git repository\BookSync
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-06-03 20:57:02.486
+!MESSAGE 
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException: Resource '/BookSync/res' does not exist.
+	at org.eclipse.core.internal.resources.Resource.checkExists(Resource.java:341)
+	at org.eclipse.core.internal.resources.Resource.checkAccessible(Resource.java:215)
+	at org.eclipse.core.internal.resources.Container.members(Container.java:266)
+	at org.eclipse.core.internal.resources.Container.members(Container.java:249)
+	at com.android.ide.eclipse.adt.internal.sdk.Sdk$7.run(Sdk.java:1433)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SUBENTRY 1 org.eclipse.core.resources 4 368 2013-06-03 20:57:02.486
+!MESSAGE Resource '/BookSync/res' does not exist.
