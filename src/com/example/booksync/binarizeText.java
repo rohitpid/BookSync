@@ -62,11 +62,10 @@ public class binarizeText {
 		Mat hierarchy = new Mat();
 
 		// Morphological Closing
-		//Imgproc.morphologyEx(gray, intermed, Imgproc.MORPH_CLOSE, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(20,20)));
+		Imgproc.morphologyEx(gray, intermed, Imgproc.MORPH_CLOSE, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(20,20)));
 		// Subtract Background
-		//Core.subtract(intermed, gray, intermed);
+		Core.subtract(intermed, gray, intermed);
 		// Otsu's Method
-		intermed=gray.clone();
 		Imgproc.threshold(intermed.clone(), intermed, 0, 255, Imgproc.THRESH_OTSU);
 		
 		imgBINARY = intermed.clone();

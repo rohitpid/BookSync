@@ -74,15 +74,18 @@ public class MainActivity extends Activity {
 		// Read Image
 		String imgName = "/bookSync/GE_328_2.jpg";
 		img = reader.getImg(imgName);
+		
 		// Get Binary (test)
 		img = textBin.getBINARYrotatedCROPPED(img,true);
-		imgData = tBox.getTextBoxData(img);
+		imgData = tBox.getTextBoxData(img.clone());
+		img = imgData.imgBINARYWORDS.clone();
 		bwcFeatures = bwcProcessor.getFeatures(imgData);
 		txtViewer.setText(Integer.toString(bwcFeatures.size())+','+Integer.toString(imgData.wordBoxes.size()));
+		
 		// Display Image
-		img = imgData.imgBINARYWORDS.clone();
 		imgBMP = Bitmap.createBitmap((int) img.size().width, (int) img.size().height, Config.RGB_565);
 		Utils.matToBitmap(img, imgBMP);
+		
 		imgViewer.setImageBitmap(imgBMP);
 		
     }
