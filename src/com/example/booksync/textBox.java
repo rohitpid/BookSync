@@ -15,7 +15,6 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.*;
 
 class textBoxData{
-	Mat imgGRAY;
 	Mat imgBINARY;
 	Mat imgBINARYWORDS;
 	
@@ -27,7 +26,6 @@ class textBoxData{
 
 public class textBox {
 	
-	private Mat imgGRAY;
 	private Mat imgBINARY;
 	private Mat imgBINARYWORDS;
 	
@@ -50,22 +48,20 @@ public class textBox {
 	///////////////////
 	// Constructor 2 //
 	///////////////////
-	public textBox(Mat img, boolean isGray){
-		if(isGray) imgGRAY = img;
-		else Imgproc.cvtColor(img, imgGRAY, Imgproc.COLOR_BGR2GRAY);
+	public textBox(Mat img){
+		imgBINARY = img;
 		textIMGProcessing();
 	}
 	
 	///////////////////
 	// Get Results 1 //
 	///////////////////
-	public textBoxData getTextBoxData(Mat img, boolean isGray){
-		if (isGray) imgGRAY = img;
-		else Imgproc.cvtColor(img, imgGRAY, Imgproc.COLOR_BGR2GRAY);
+	public textBoxData getTextBoxData(Mat img){
+		
+		imgBINARY = img;
 		
 		textIMGProcessing();
-		
-		//getTextBoxData();
+		saveTextBoxData();
 		
 		return data;
 	}
@@ -75,88 +71,30 @@ public class textBox {
 	///////////////////
 	public textBoxData getTextBoxData(){
 
-		data.imgGRAY = imgGRAY;
-		data.imgBINARY = imgBINARY;
-		data.imgBINARYWORDS = imgBINARYWORDS;
-		data.letterW = letterW;
-		data.letterH = letterH;
+		saveTextBoxData();
 		
 		return data;
+	}
+	
+	///////////////////////
+	// Save textBox data //
+	///////////////////////
+	private void saveTextBoxData(){
+
+		data.imgBINARY = imgBINARY.clone();
+		data.imgBINARYWORDS = imgBINARYWORDS.clone();
+		data.letterW = letterW;
+		data.letterH = letterH;
+		data.wordBoxes = wordBoxes;
+	
 	}
 	
 	///////////////////////////
 	// Text Image Processing //
 	///////////////////////////
 	public void textIMGProcessing(){
-		morphGRAY2BIN();
 		letterSIZE();
 		connectedComponentAnalysis();
-	}
-	
-	//////////////////////
-	// Get binary image //
-	//////////////////////
-	// Morphological filtering + Otsu's method + get rid of vertical margins
-	private void morphGRAY2BIN(){
-		Size S = imgGRAY.size();
-		int T = imgGRAY.type();
-		Mat intermed = new Mat();
-		Mat margins = new Mat();
-		
-		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-		MatOfPoint contour = new MatOfPoint();
-		Mat hierarchy = new Mat();
-		
-		int maxX = 0;
-		int minX = 0;
-		int[] x = null;
-		
-		Mat matLeft = new Mat();
-		Mat matRight = new Mat();
-		List<Mat> matList = new ArrayList<Mat>();
-		Mat andMat = new Mat();
-		
-		// Morphological Closing
-		Imgproc.morphologyEx(imgGRAY, intermed, Imgproc.MORPH_CLOSE, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(20,20)));
-		// Subtract Background
-		Core.subtract(intermed, imgGRAY, intermed);
-		// Otsu's Method
-		Imgproc.adaptiveThreshold(intermed, intermed, 1, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 101, 0);
-		// Dilation with vertical bar, l = S.height
-		Imgproc.morphologyEx(intermed, margins, Imgproc.MORPH_DILATE, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(S.height,1)));
-		// Get rid of margins
-		Imgproc.findContours(imgGRAY, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-		if (!contours.isEmpty()){
-			for (int k = 0;k<contours.size();k++){
-				maxX = 0;
-				minX = 0;
-				contour = contours.get(k);
-				getContourRect(contour);
-				
-				Size a = new Size();
-				
-				if (maxX < S.width/5){
-					matLeft = Mat.zeros(new Size(boxIntermed.x + boxIntermed.width,S.height),T);
-					matRight = Mat.ones(new Size(S.width-boxIntermed.x-boxIntermed.width,S.height), T);
-					matList.add(matLeft);
-					matList.add(matRight);
-					Core.hconcat(matList,andMat);
-					Core.multiply(andMat, intermed, intermed);
-					matList.clear();
-
-				}
-				if (minX > S.width*4/5){
-					matLeft = Mat.ones(new Size(S.width-boxIntermed.x,S.height),T);
-					matRight = Mat.zeros(new Size(boxIntermed.x,S.height), T);
-					matList.add(matLeft);
-					matList.add(matRight);
-					Core.hconcat(matList,andMat);
-					Core.multiply(andMat, intermed, intermed);
-					matList.clear();
-				}
-			}
-		}
-		imgBINARY = intermed;
 	}
 	
 	//////////////////////////
@@ -173,7 +111,7 @@ public class textBox {
 		
 		int s = 0;
 		
-		Imgproc.findContours(imgBINARY, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+		Imgproc.findContours(imgBINARY.clone(), contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 		
 		if (!contours.isEmpty()){
 			s = contours.size();
@@ -199,37 +137,35 @@ public class textBox {
 	private void connectedComponentAnalysis(){
 	
 		Mat intermed = new Mat();
-		Size S = imgBINARY.size();
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 		MatOfPoint contour = new MatOfPoint();
 		Mat hierarchy = new Mat();
 		double a = 0;
 		Point p1 = new Point();
 		Point p2 = new Point();
-		Scalar s = new Scalar(.7, .7, .7);
+		Scalar s = new Scalar(150,150,150);
 
 		// Dilate horizontally, erode vertically
 		Mat SE = new Mat();
 		int wantedVal = (int) Math.ceil((double)letterW/2);
-		SE = Mat.ones(new Size(wantedVal,2), 0);
-		Imgproc.morphologyEx(imgBINARY, intermed, Imgproc.MORPH_DILATE, SE);
+		SE = Mat.ones(new Size(wantedVal,3), 0);
+		Imgproc.morphologyEx(imgBINARY.clone(), intermed, Imgproc.MORPH_DILATE, SE);
 		wantedVal = (int) Math.ceil((double)letterH/4);
-		SE = Mat.ones(new Size(2,wantedVal), 0);
-		Imgproc.morphologyEx(imgBINARY, intermed, Imgproc.MORPH_ERODE, SE);
-		//SE = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(Math.ceil((double)letterW/2),2), new Point(1,1));
-		//Imgproc.morphologyEx(intermed, intermed, Imgproc.MORPH_CLOSE, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(letterH/4,2)));
-		
+		SE = Mat.ones(new Size(1,wantedVal), 0);
+		Imgproc.morphologyEx(intermed, intermed, Imgproc.MORPH_ERODE, SE);
 		
 		// save result as grayscale image
-		imgBINARYWORDS.convertTo(intermed, imgGRAY.type());
-
+		imgBINARYWORDS = intermed.clone();
+		int T = imgBINARY.type();
+		imgBINARYWORDS.convertTo(imgBINARYWORDS, T);
+		
 		// Get bounding boxes
-		//Imgproc.findContours(intermed, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-	/*if (!contours.isEmpty()){
+		Imgproc.findContours(intermed, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+		if (!contours.isEmpty()){
 			for (int k = 0; k < contours.size(); k++){
 				contour = contours.get(k);
 				a = Imgproc.contourArea(contour);
-				if (a > 0.8*letterW*letterH && a < 30*letterW*letterH){
+				if (a > 0.5*letterW*letterH && a < 30*letterW*letterH){
 					getContourRect(contour);
 					// Save wordbox data
 					wordBoxes.add(boxIntermed);
@@ -242,12 +178,12 @@ public class textBox {
 				}
 			}
 		}
-		*/
+	
 	}
 	
-	////////////////////////
-	// Get contour height //
-	////////////////////////
+	//////////////////////
+	// Get contour size //
+	//////////////////////
 	private void getContourRect(MatOfPoint contour){
 		
 
@@ -259,7 +195,6 @@ public class textBox {
 		int xMin = (int) v.x;
 		int yMax = (int) v.y;
 		int yMin = (int) v.y;
-		
 		
 		for (int i = 1;i<nPoints;i++){
 			v = points[i];
@@ -275,8 +210,10 @@ public class textBox {
 		boxIntermed.height = yMax - yMin;
 	}
 	
+	////////////////////////
+	// Instantiate Values //
+	////////////////////////
 	private void InstantiateVals(){
-		imgGRAY = new Mat();
 		imgBINARY = new Mat();
 		imgBINARYWORDS = new Mat();
 		
@@ -285,6 +222,8 @@ public class textBox {
 		
 		boxIntermed = new Rect();
 		wordBoxes = new ArrayList<Rect>();
+		
+		data = new textBoxData();
 	}
 	
 }

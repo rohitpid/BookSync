@@ -1,6 +1,8 @@
 package com.example.booksync;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -38,12 +40,19 @@ public class MainActivity extends Activity {
     private Uri outputFileUri;
     String APP_DIR = Environment.getExternalStorageDirectory()+"/BookSync/";
 
+
 	jpgRead reader;
+	textBox tBox;
+	textBoxData imgData;
+	BWC bwcProcessor;
+	binarizeText textBin;
+	List<featureBWC> bwcFeatures;
+	
 	Mat img;
 	Bitmap imgBMP;
+	
 	ImageView imgViewer;
-	textBoxData imgData;
-	textBox tBox;
+	TextView txtViewer;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,19 +61,29 @@ public class MainActivity extends Activity {
 		
 		// Initialise
 		imgViewer = (ImageView) findViewById(R.id.imageView1);
+		txtViewer = (TextView) findViewById(R.id.textView1);
 		reader = new jpgRead();
 		tBox = new textBox();
 		imgData = new textBoxData();
+		img = new Mat();
+		
+		bwcProcessor = new BWC();
+		bwcFeatures = new ArrayList<featureBWC>();
+		textBin = new binarizeText();
 		
 		// Read Image
-		String imgName = APP_DIR+"GE_328_2.jpg";
+		String imgName = "/bookSync/GE_328_2.jpg";
 		img = reader.getImg(imgName);
+		// Get Binary (test)
+		img = textBin.getBINARYrotatedCROPPED(img,true);
+		imgData = tBox.getTextBoxData(img);
+		bwcFeatures = bwcProcessor.getFeatures(imgData);
+		txtViewer.setText(Integer.toString(bwcFeatures.size())+','+Integer.toString(imgData.wordBoxes.size()));
+		// Display Image
+		img = imgData.imgBINARYWORDS.clone();
 		imgBMP = Bitmap.createBitmap((int) img.size().width, (int) img.size().height, Config.RGB_565);
 		Utils.matToBitmap(img, imgBMP);
 		imgViewer.setImageBitmap(imgBMP);
-		
-		// Play with textBox
-		//tBox.getTextBoxData(img, true);
 		
     }
 
@@ -109,7 +128,7 @@ public class MainActivity extends Activity {
         	String recognizedText = baseApi.getUTF8Text();
         	System.out.println(recognizedText);
         	TextView text = (TextView) findViewById(R.id.textView1);
-        	text.setText(recognizedText);
+        	txtViewer.setText(recognizedText);
         	baseApi.end();
         	
         	/*Mat cvIMG = new Mat();

@@ -1,5 +1,6 @@
 package com.example.booksync;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -22,7 +23,9 @@ public class BWC {
 	private textBoxData data;
 	private List<featureBWC> features;
 	
-	
+	////////////////////////////
+	// Comparator for sorting //
+	////////////////////////////
 	Comparator<featureSeg> xCompare = new Comparator<featureSeg>(){
 		public int compare(featureSeg f1, featureSeg f2){
 			if (f1.X > f2.X) return 1;
@@ -30,11 +33,20 @@ public class BWC {
 		}
 	};
 	
-	/////////////////
-	// Constructor //
-	/////////////////
+	///////////////////
+	// Constructor 1 //
+	///////////////////
+	public BWC(){
+		features = new ArrayList<featureBWC>();
+		data = new textBoxData();
+	}
+
+	///////////////////
+	// Constructor 2 //
+	///////////////////
 	public BWC(textBoxData BWCData){
 		data = BWCData;
+		features = new ArrayList<featureBWC>();
 		detectFeatures();
 	}
 	
@@ -59,21 +71,18 @@ public class BWC {
 	//////////////////////
 	private void detectFeatures(){
 		
-		List<featureSeg> above = null;
-		List<featureSeg> below = null;
-		featureSeg intermed = null;
-		featureBWC intermedFeat = null;
-		Point p = null;
+		List<featureSeg> above = new ArrayList<featureSeg>();
+		List<featureSeg> below = new ArrayList<featureSeg>();
+		featureSeg intermed = new featureSeg();
+		featureBWC intermedFeat = new featureBWC();
+		Point p = new Point();
 		
-		List<Rect> WB = null;
+		List<Rect> WB = new ArrayList<Rect>();
 		WB = data.wordBoxes;
-		Rect box = null;
-		Rect boxL = null;
+		Rect box = new Rect();
+		Rect boxL = new Rect();
 		
-		int xMin, yMin, xMax, yMax;
-		int[] boxAbove;
-		int[] boxBelow;
-		int counter;
+		int xMin, yMin, xMax, yMax = 0;
 		
 		int S = WB.size();
 		
@@ -82,9 +91,6 @@ public class BWC {
 		
 		// count relevant boxes
 		for (int k=0; k<S; k++){
-			boxAbove = null;
-			boxBelow = null;
-			counter = 0;
 			box = WB.get(k);
 			xMin = box.x;
 			yMin = box.y;
@@ -93,20 +99,21 @@ public class BWC {
 			for (int l = 0; l<S; l++){
 				if (k!=l){
 					boxL = WB.get(l);
-					if (Math.abs(yMax-boxL.y)<h && xMin<(boxL.x+boxL.width) && xMax>(boxL.x)){
+					if (Math.abs(yMax-boxL.y)<3*h/4 && xMin<(boxL.x+boxL.width) && xMax>(boxL.x)){
 						intermed.X = boxL.x;
-						intermed.Length = boxL.width/w;
+						intermed.Length = boxL.width/boxL.height;
 						below.add(intermed);
 					}
-					if (Math.abs(yMin-boxL.y-boxL.height)<h && xMin<(boxL.x+boxL.width) && xMax>boxL.x){
+					if (Math.abs(yMin-boxL.y-boxL.height)<3*h/4 && xMin<(boxL.x+boxL.width) && xMax>boxL.x){
 						intermed.X = boxL.x;
-						intermed.Length = boxL.width/w;
+						intermed.Length = boxL.width/boxL.height;
 						above.add(intermed);
 					}
 				}
 			}
 			if ((above.size()+below.size())>2 && above.size()>0 && below.size()>0){
-				
+			//if ((above.size()+below.size())==5){
+			
 				Collections.sort(above,xCompare);
 				Collections.sort(below,xCompare);
 				p.x = xMin;
@@ -126,5 +133,3 @@ public class BWC {
 	}
 	
 }
-
-	

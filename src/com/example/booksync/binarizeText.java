@@ -15,7 +15,8 @@ public class binarizeText {
 
 	private Mat imgGRAY;
 	private Mat imgBINARY;
-	//private Mat imgBINARYrotated;
+	private Mat imgBINARYrotated;
+	private Mat imgBINARYrotatedCROPPED;
 	private Rect boxIntermed;
 	
 	//////////////////
@@ -30,29 +31,31 @@ public class binarizeText {
 		if(isGray) imgGRAY = img;
 		else Imgproc.cvtColor(img, imgGRAY, Imgproc.COLOR_BGR2GRAY);
 		binarize();
+		imgBINARYrotated = imgBINARY;
 		//rotate();
+		crop();
 	}
 	
 	// Get Binary Image //
-	public Mat getBinary(Mat img, boolean isGray){
+	public Mat getBINARYrotatedCROPPED(Mat img, boolean isGray){
 		if (isGray) imgGRAY = img;
 		else Imgproc.cvtColor(img, imgGRAY, Imgproc.COLOR_BGR2GRAY);
 		binarize();
-		return imgBINARY;
+		imgBINARYrotated = imgBINARY;
+		crop();
+		return imgBINARYrotatedCROPPED;
 	}
 	public Mat getBinary(){
-		return imgBINARY;
+		return imgBINARYrotatedCROPPED;
 	}
 	
 	//////////////////////
 	// Get binary image //
 	//////////////////////
-	// Morphological filtering + Otsu's method + get rid of vertical margins
+	// Morphological filtering + Otsu's method
 	private void binarize(){
-		Size S = imgGRAY.size();
 		Mat gray = imgGRAY.clone();
 		Mat intermed = new Mat();
-		Mat margins = new Mat();
 
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 		MatOfPoint contour = new MatOfPoint();
@@ -64,28 +67,7 @@ public class binarizeText {
 		Core.subtract(intermed, gray, intermed);
 		// Otsu's Method
 		Imgproc.threshold(intermed.clone(), intermed, 0, 255, Imgproc.THRESH_OTSU);
-		// Dilation with vertical bar, l = S.height
-		Imgproc.morphologyEx(intermed.clone(), margins, Imgproc.MORPH_DILATE, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1,(int)S.height)));
-		// Get rid of margins
-		Imgproc.findContours(margins, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-		if (!contours.isEmpty()){
-			int xMin = 0;
-			int xMax = (int) S.width-1;
-			int minX = 0;
-			int maxX = 0;
-			for (int k = 0;k<contours.size();k++){
-				contour = contours.get(k);
-				getContourRect(contour);
-				minX = boxIntermed.x;
-				maxX = boxIntermed.x + boxIntermed.width;
-				if ((maxX < S.width/4) & (maxX > xMin)) xMin = maxX;
-				if ((minX > 3* S.width/4) & (minX < xMax)) xMax = minX;
-	
-			}
-			Rect rectCrop = new Rect(xMin,0,xMax-xMin,(int) S.height);
-
-			intermed = new Mat(intermed,rectCrop);
-		}
+		
 		imgBINARY = intermed.clone();
 	}
 	
@@ -119,11 +101,63 @@ public class binarizeText {
 		boxIntermed.height = yMax - yMin;
 	}
 
+	
+	//////////
+	// Crop //
+	//////////
+	private void crop(){
+		
+		Mat margins = new Mat();
+		Mat hierarchy = new Mat();
+		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+		
+		Size S = imgBINARYrotated.size();
+		
+		MatOfPoint contour = new MatOfPoint();
+		
+		// Dilation with vertical bar, l = S.height
+		Imgproc.morphologyEx(imgBINARYrotated.clone(), margins, Imgproc.MORPH_DILATE, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1,(int)S.height/4)));
+
+		// Get rid of margins
+		Imgproc.findContours(margins, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+		if (!contours.isEmpty()){
+			int xMin = 0;
+			int xMax = (int) S.width-1;
+			int minX = 0;
+			int maxX = 0;
+			for (int k = 0;k<contours.size();k++){
+			contour = contours.get(k);
+			getContourRect(contour);
+			minX = boxIntermed.x;
+			maxX = boxIntermed.x + boxIntermed.width;
+			if ((maxX < S.width/4) & (maxX > xMin)) xMin = maxX;
+			if ((minX > 3* S.width/4) & (minX < xMax)) xMax = minX;	
+			}
+		Rect rectCrop = new Rect(xMin,0,xMax-xMin,(int) S.height);
+
+		imgBINARYrotatedCROPPED = new Mat(imgBINARYrotated.clone(),rectCrop);
+		}
+	}
+	
 	private void instantiate(){
 		imgGRAY = new Mat();
 		imgBINARY = new Mat();
-		//imgROTATED = new Mat();
+		imgBINARYrotated = new Mat();
+		imgBINARYrotatedCROPPED = new Mat();
 		boxIntermed = new Rect();
+	}
+	
+	////////////
+	// Rotate //
+	////////////
+	private void rotate(){
+		
+		imgBINARYrotated = imgBINARY;
+		
+		//Mat lines = new Mat();
+		//Mat dst = new Mat();
+		
+		//Imgproc.HoughLinesP(dst, lines, 1, Math.PI/360, 100);
 	}
 	
 }
