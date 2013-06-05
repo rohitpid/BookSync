@@ -51,8 +51,7 @@ containing a value of this type.
         public static final int ic_launcherold=0x7f020001;
     }
     public static final class id {
-        public static final int action_settings=0x7f040009;
-        public static final int adapterViewFlipper1=0x7f040008;
+        public static final int action_settings=0x7f040008;
         public static final int any=0x7f040000;
         public static final int back=0x7f040001;
         public static final int button1=0x7f040006;

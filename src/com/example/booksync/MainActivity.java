@@ -2,6 +2,7 @@ package com.example.booksync;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
@@ -179,5 +180,34 @@ public class MainActivity extends Activity {
 	
 	public void nextImage(View view){
 	}
-    
+	
+	public List<Double> normalizeVector(List<Double> ls){
+		double sum = 0.0;
+		for(int i=0;i<ls.size();i++){
+			sum = sum+ls.get(i);
+		}
+		for(int i=0;i<ls.size();i++){
+			ls.set(i, ls.get(i)/sum);
+		}
+		return ls;
+	}
+	
+	public double euclidianDistance(List<Double> feature1,List<Double> feature2){
+		double sum = 0.0;
+		for(int i=0;i<feature1.size();i++){
+			sum = Math.pow(feature1.get(i)-feature2.get(i),2);
+		}
+		double distance = Math.sqrt(sum);
+		return distance;
+	}
+	
+	public List<Scores> kNearestNeighbor(List<Double> testFeatures, List<List<Double>> trainFeatures){
+		List<Scores> rankedPages = new ArrayList<Scores>();
+		for(int i=0;i<trainFeatures.size();i++){
+			rankedPages.get(i).score = euclidianDistance(testFeatures,trainFeatures.get(i));
+			rankedPages.get(i).page = i;
+		}
+		Collections.sort(rankedPages);
+		return rankedPages;
+	}
 }
