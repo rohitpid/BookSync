@@ -14,16 +14,6 @@ import org.opencv.core.Size;
 
 import org.opencv.imgproc.*;
 
-class textBoxData{
-	Mat imgBINARY;
-	Mat imgBINARYWORDS;
-	
-	int letterW;
-	int letterH;
-	
-	List<Rect> wordBoxes;
-}
-
 public class textBox {
 	
 	private Mat imgBINARY;
@@ -119,7 +109,7 @@ public class textBox {
 			heights = new int[s];
 			for (int k = 0; k < s; k++){
 				contour = contours.get(k);
-				getContourRect(contour);
+				boxIntermed = getContourRect(contour);
 				widths[k] = boxIntermed.width;
 				heights[k] = boxIntermed.height;
 			}
@@ -127,8 +117,8 @@ public class textBox {
 			Arrays.sort(widths);
 			Arrays.sort(heights);
 		}
-		letterW = widths[s/2];
-		letterH = heights[s/2];
+		letterW = widths[5*s/6];
+		letterH = heights[5*s/6];
 	}
 	
 	///////////////////////////////////////////////////////
@@ -148,7 +138,7 @@ public class textBox {
 		// Dilate horizontally, erode vertically
 		Mat SE = new Mat();
 		int wantedVal = (int) Math.ceil((double)letterW/2);
-		SE = Mat.ones(new Size(wantedVal,3), 0);
+		SE = Mat.ones(new Size(wantedVal,2), 0);
 		Imgproc.morphologyEx(imgBINARY.clone(), intermed, Imgproc.MORPH_DILATE, SE);
 		wantedVal = (int) Math.ceil((double)letterH/4);
 		SE = Mat.ones(new Size(1,wantedVal), 0);
@@ -160,13 +150,14 @@ public class textBox {
 		imgBINARYWORDS.convertTo(imgBINARYWORDS, T);
 		
 		// Get bounding boxes
+		Rect testRect = new Rect();
 		Imgproc.findContours(intermed, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 		if (!contours.isEmpty()){
 			for (int k = 0; k < contours.size(); k++){
 				contour = contours.get(k);
-				a = Imgproc.contourArea(contour);
-				if (a > 0.5*letterW*letterH && a < 30*letterW*letterH){
-					getContourRect(contour);
+				boxIntermed = getContourRect(contour);
+				a = boxIntermed.area();
+				if (a > letterW*letterH/2 && a < 30*letterW*letterH && boxIntermed.height < 2*letterH){
 					// Save wordbox data
 					wordBoxes.add(boxIntermed);
 					// Draw wordbox in imgBINARYWORDS
@@ -184,12 +175,13 @@ public class textBox {
 	//////////////////////
 	// Get contour size //
 	//////////////////////
-	private void getContourRect(MatOfPoint contour){
+	private Rect getContourRect(MatOfPoint contour){
 		
 
 		Point[] points = contour.toArray();
 		int nPoints = points.length;
 		Point v = points[0];
+		Rect boxRect = new Rect();
 		
 		int xMax = (int) v.x;
 		int xMin = (int) v.x;
@@ -204,10 +196,12 @@ public class textBox {
 			if (v.y > yMax) yMax = (int) v.y;
 		}
 
-		boxIntermed.x = xMin;
-		boxIntermed.y = yMin;
-		boxIntermed.width = xMax - xMin;
-		boxIntermed.height = yMax - yMin;
+		boxRect.x = xMin;
+		boxRect.y = yMin;
+		boxRect.width = xMax - xMin;
+		boxRect.height = yMax - yMin;
+		
+		return boxRect;
 	}
 	
 	////////////////////////

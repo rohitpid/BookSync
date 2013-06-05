@@ -59,7 +59,7 @@ public class jpgRead {
 		else imgGray = Mat.zeros(new Size(10,10), 0);
 		
 		// Resize Image
-		Imgproc.resize(imgGray, imgGray, new Size(640.0,480.0));
+		Imgproc.resize(imgGray, imgGray, new Size(1280,960.0));
 	}
 
 }

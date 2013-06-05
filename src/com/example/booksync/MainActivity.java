@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.opengl.Matrix;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
@@ -41,6 +43,29 @@ public class MainActivity extends Activity {
     private Uri outputFileUri;
     String APP_DIR = Environment.getExternalStorageDirectory()+"/BookSync/";
 
+    // image reader
+    jpgRead reader;
+    // binaraize text
+    binarizeText textBin;
+    // get text box data
+    textBox tBox;
+    textBoxData imgData;
+   // get BWC features
+    bwcFeatures bwcProcessor;
+    List<bwcFeature> features;
+    
+    // image
+    Mat img;
+    
+    // image & text viewer
+    ImageView imgViewer;
+	TextView txtViewer;
+	
+	// media player
+	MediaPlayer mplayer;
+	int mPlayerStart;
+	
+    /*
 	jpgRead reader;
 	textBox tBox;
 	textBoxData imgData;
@@ -53,12 +78,97 @@ public class MainActivity extends Activity {
 	
 	ImageView imgViewer;
 	TextView txtViewer;
-	
+	 */
+    
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 		
+        
+        mplayer = new MediaPlayer();
+        File sdCard = Environment.getExternalStorageDirectory();
+        File audioSource = new File(sdCard.getAbsolutePath()+"/BookSync/GreatExpectationsUnabridgedPart1_mp332_chen.mo.david.mp3");
+        mplayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
+            @Override
+            public void onSeekComplete(MediaPlayer mp) {
+                // Start the song 30 seconds in
+                mp.start();
+            }
+        });
+        
+        mPlayerStart = 30000;
+        mplayer.seekTo(mPlayerStart);
+        
+        // Instantiate hash & other classes
+        hashTest hTester = new hashTest();
+        
+        reader = new jpgRead();
+        textBin = new binarizeText();
+        tBox = new textBox();
+        imgData = new textBoxData();
+        bwcProcessor = new bwcFeatures();
+        features = new ArrayList<bwcFeature>();
+        
+        // Instantiate image and text viewers
+        imgViewer = (ImageView) findViewById(R.id.imageView1);
+		txtViewer = (TextView) findViewById(R.id.textView1);
+        
+		// Instantiate images
+		img = new Mat();
+		
+        // Read Image
+     	String imgName = "/bookSync/test1.jpg";
+     	img = reader.getImg(imgName);
+     		
+     	// Get Binary Image
+     	img = textBin.getBINARYrotatedCROPPED(img,true);
+     	// Get Text Box Data
+     	imgData = tBox.getTextBoxData(img.clone());
+     	img = imgData.imgBINARYWORDS.clone();			// set image to binary words information
+     	// Get BWC Features
+     	features = bwcProcessor.getFeatures(new textBoxData(imgData.imgBINARY, imgData.imgBINARYWORDS, imgData.letterW, imgData.letterH, imgData.wordBoxes));
+     	
+     	//String txt = Integer.toString((int)features.size())+','+Integer.toString(imgData.letterH)+','+Integer.toString(imgData.letterW);
+     	//int i = 1;
+     	
+     	/*
+     	for (int k = 0; k < imgData.wordBoxes.size(); k++){
+     		txt = txt + Integer.toString((int)imgData.wordBoxes.get(k).width) + ',';
+     	}
+     	*/
+     	String txt = Integer.toString(features.size())+';';
+   
+     	int i = 12;
+     	if (features.size()>i){
+     		for (int k = 0; k<5; k++){
+     			txt = txt + Float.toString(features.get(0).vals[k]) + ", ";
+     		}
+     		txt = txt + ';';
+     		for (int k = 0; k<5; k++){
+     			txt = txt + Float.toString(features.get(i).vals[k]) + ", ";
+     		}
+     		//String txt = Integer.toString(bwcFeatures.size()) + ',' + Integer.toString(imgData.letterH)+ ',' + Integer.toString(imgData.letterW);
+     	}
+     	//txt = Integer.toString(bwcFeatures.size())+','+Integer.toString(imgData.wordBoxes.size());
+     	txtViewer.setText(txt);
+     		
+     	// Display Image
+     	Bitmap imgBMP = Bitmap.createBitmap((int) img.size().width, (int) img.size().height, Config.RGB_565);
+     	Utils.matToBitmap(img, imgBMP);
+     	imgViewer.setImageBitmap(imgBMP);
+        
+        //List<Integer> intTest = hTester.getHashResult();
+        
+        //String txt = "";
+        //for (int k = 0;k < intTest.size();k++){
+        	//txt = txt + "val: " + Integer.toString(intTest.get(k));
+        //}
+        
+        //TextView txtViewer = (TextView) findViewById(R.id.textView1);
+        //txtViewer.setText(txt);
+        
+        /*
 		// Initialise
 		imgViewer = (ImageView) findViewById(R.id.imageView1);
 		txtViewer = (TextView) findViewById(R.id.textView1);
@@ -87,6 +197,7 @@ public class MainActivity extends Activity {
 		Utils.matToBitmap(img, imgBMP);
 		
 		imgViewer.setImageBitmap(imgBMP);
+		*/
 		
     }
 
@@ -118,7 +229,7 @@ public class MainActivity extends Activity {
     	intent.setDataAndType(Uri.fromFile(file), "audio/*");
     	startActivity(intent);
     }
-    
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
         if (requestCode == PICTURE_RESULT && resultCode == RESULT_OK) {
         	System.out.println(outputFileUri.toString());
