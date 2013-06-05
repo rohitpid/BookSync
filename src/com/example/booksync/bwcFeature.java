@@ -4,11 +4,11 @@ import org.opencv.core.Point;
 
 public class bwcFeature{
 
-	public float vals[];
+	public double vals[];
 	public Point p;
 
 	// Constructor
-	public bwcFeature(float[] valsIN, Point pIN){
+	public bwcFeature(double[] valsIN, Point pIN){
 		vals = valsIN;
 		p = pIN;
 	}

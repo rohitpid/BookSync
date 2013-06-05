@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
     textBoxData imgData;
    // get BWC features
     bwcFeatures bwcProcessor;
-    List<bwcFeature> features;
+    //ArrayList<bwcFeature> features;
     
     // image
     Mat img;
@@ -66,20 +66,10 @@ public class MainActivity extends Activity {
 	MediaPlayer mplayer;
 	int mPlayerStart;
 	
-    /*
-	jpgRead reader;
-	textBox tBox;
-	textBoxData imgData;
-	BWC bwcProcessor;
-	binarizeText textBin;
-	List<featureBWC> bwcFeatures;
-	
-	Mat img;
-	Bitmap imgBMP;
-	
-	ImageView imgViewer;
-	TextView txtViewer;
-	 */
+	// Training features
+	ArrayList<ArrayList<bwcFeature>> trainingVectors;
+	// Scores
+	List<Scores> listOfScores;
     
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,18 +88,15 @@ public class MainActivity extends Activity {
             }
         });
         
-        mPlayerStart = 30000;
-        mplayer.seekTo(mPlayerStart);
-        
-        // Instantiate hash & other classes
-        hashTest hTester = new hashTest();
+        //mPlayerStart = 30000;
+        //mplayer.seekTo(mPlayerStart);
         
         reader = new jpgRead();
         textBin = new binarizeText();
         tBox = new textBox();
         imgData = new textBoxData();
         bwcProcessor = new bwcFeatures();
-        features = new ArrayList<bwcFeature>();
+        //features = new ArrayList<bwcFeature>();
         
         // Instantiate image and text viewers
         imgViewer = (ImageView) findViewById(R.id.imageView1);
@@ -118,88 +105,80 @@ public class MainActivity extends Activity {
 		// Instantiate images
 		img = new Mat();
 		
-        // Read Image
-     	String imgName = "/bookSync/test1.jpg";
-     	img = reader.getImg(imgName);
-     		
-     	// Get Binary Image
-     	img = textBin.getBINARYrotatedCROPPED(img,true);
-     	// Get Text Box Data
-     	imgData = tBox.getTextBoxData(img.clone());
-     	img = imgData.imgBINARYWORDS.clone();			// set image to binary words information
-     	// Get BWC Features
-     	features = bwcProcessor.getFeatures(new textBoxData(imgData.imgBINARY, imgData.imgBINARYWORDS, imgData.letterW, imgData.letterH, imgData.wordBoxes));
-     	
-     	//String txt = Integer.toString((int)features.size())+','+Integer.toString(imgData.letterH)+','+Integer.toString(imgData.letterW);
-     	//int i = 1;
-     	
-     	/*
-     	for (int k = 0; k < imgData.wordBoxes.size(); k++){
-     		txt = txt + Integer.toString((int)imgData.wordBoxes.get(k).width) + ',';
-     	}
-     	*/
-     	String txt = Integer.toString(features.size())+';';
-   
-     	int i = 12;
-     	if (features.size()>i){
-     		for (int k = 0; k<5; k++){
-     			txt = txt + Float.toString(features.get(0).vals[k]) + ", ";
-     		}
-     		txt = txt + ';';
-     		for (int k = 0; k<5; k++){
-     			txt = txt + Float.toString(features.get(i).vals[k]) + ", ";
-     		}
-     		//String txt = Integer.toString(bwcFeatures.size()) + ',' + Integer.toString(imgData.letterH)+ ',' + Integer.toString(imgData.letterW);
-     	}
-     	//txt = Integer.toString(bwcFeatures.size())+','+Integer.toString(imgData.wordBoxes.size());
-     	txtViewer.setText(txt);
-     		
+		int k = 0;
+		int i = 0;
+		
+		trainingVectors = new ArrayList<ArrayList<bwcFeature>>();
+		listOfScores = new ArrayList<Scores>();
+		
+		//ArrayList<bwcFeature> features;
+		
+        // Train Features
+	
+		ArrayList<bwcFeature> features = new ArrayList<bwcFeature>();
+		String txt2 = "";
+		for (k = 0;k<10;k++){
+		
+			//String imgName = "/bookSync/test"+Integer.toString(k)+".jpg";
+			String imgName = "/bookSync/test1.jpg";
+			img = reader.getImg(imgName);
+			// Get Binary Image
+			img = textBin.getBINARYrotatedCROPPED(img,true);
+			// Get Text Box Data
+			imgData = new textBoxData();
+			imgData = tBox.getTextBoxData(img);
+			img = imgData.imgBINARYWORDS.clone();			// set image to binary words information
+			// Get BWC Features
+			features = bwcProcessor.getFeatures(new textBoxData(imgData.imgBINARY, imgData.imgBINARYWORDS, imgData.letterW, imgData.letterH, imgData.wordBoxes));
+			txt2 = txt2 + "," + features.size();
+			trainingVectors.add(features);
+				
+		}
+
+		
+		// Set Specific Image
+		//String imgName = "/bookSync/test2.jpg";
+		//img = reader.getImg(imgName);
+		//img = textBin.getBINARYrotatedCROPPED(img,true);
+		//imgData = tBox.getTextBoxData(img);
+		//img = imgData.imgBINARYWORDS.clone();
+		
+		//ArrayList<bwcFeature> features = new ArrayList<bwcFeature>();
+		//features = bwcProcessor.getFeatures(new textBoxData(imgData.imgBINARY, imgData.imgBINARYWORDS, imgData.letterW, imgData.letterH, imgData.wordBoxes));
+		//features = bwcProcessor.getFeatures(imgData);
+		
+		//listOfScores = kNearestNeighbor(features.get(0), trainingVectors.get(0));
+		
+		//String txt = "listOfScores: "+Integer.toString(listOfScores.size()) + "trainingVectors[1]: "+Integer.toString(trainingVectors.get(0).size());
+		
+		//String txt = Integer.toString(features.size());
+		//for (k=0;k<10;k++) txt = txt+","+Double.toString(features.get(k).vals[0]);
+		
+		String txt = "";
+		for (k=0;k<10;k++) txt = txt+","+Integer.toString(trainingVectors.get(k).size());
+		txt = txt + ";" + txt2;
+		
+		/*String txt = "";
+		for (i=0;i < 10;i++){
+			txt = txt +"; "+Integer.toString(listOfScores.get(i).page)+"."+Double.toString(listOfScores.get(i).score);
+		}*/
+		
+		/*
+		String txt = "";
+		for (i = 0;i<10;i++){
+			for (k = 0;k<5;k++){
+				txt = txt + "," + Double.toString(features.get(i).vals[k]);
+			}
+			txt = txt + ";";
+		}*/
+		
      	// Display Image
+		
      	Bitmap imgBMP = Bitmap.createBitmap((int) img.size().width, (int) img.size().height, Config.RGB_565);
      	Utils.matToBitmap(img, imgBMP);
      	imgViewer.setImageBitmap(imgBMP);
-        
-        //List<Integer> intTest = hTester.getHashResult();
-        
-        //String txt = "";
-        //for (int k = 0;k < intTest.size();k++){
-        	//txt = txt + "val: " + Integer.toString(intTest.get(k));
-        //}
-        
-        //TextView txtViewer = (TextView) findViewById(R.id.textView1);
-        //txtViewer.setText(txt);
-        
-        /*
-		// Initialise
-		imgViewer = (ImageView) findViewById(R.id.imageView1);
-		txtViewer = (TextView) findViewById(R.id.textView1);
-		reader = new jpgRead();
-		tBox = new textBox();
-		imgData = new textBoxData();
-		img = new Mat();
-		
-		bwcProcessor = new BWC();
-		bwcFeatures = new ArrayList<featureBWC>();
-		textBin = new binarizeText();
-		
-		// Read Image
-		String imgName = "/bookSync/GE_328_2.jpg";
-		img = reader.getImg(imgName);
-		
-		// Get Binary (test)
-		img = textBin.getBINARYrotatedCROPPED(img,true);
-		imgData = tBox.getTextBoxData(img.clone());
-		img = imgData.imgBINARYWORDS.clone();
-		bwcFeatures = bwcProcessor.getFeatures(imgData);
-		txtViewer.setText(Integer.toString(bwcFeatures.size())+','+Integer.toString(imgData.wordBoxes.size()));
-		
-		// Display Image
-		imgBMP = Bitmap.createBitmap((int) img.size().width, (int) img.size().height, Config.RGB_565);
-		Utils.matToBitmap(img, imgBMP);
-		
-		imgViewer.setImageBitmap(imgBMP);
-		*/
-		
+        txtViewer.setText(txt);
+       		
     }
 
 
@@ -303,20 +282,21 @@ public class MainActivity extends Activity {
 		return ls;
 	}
 	
-	public double euclidianDistance(List<Double> feature1,List<Double> feature2){
+	public double euclidianDistance(bwcFeature feature1,bwcFeature feature2){
 		double sum = 0.0;
-		for(int i=0;i<feature1.size();i++){
-			sum = Math.pow(feature1.get(i)-feature2.get(i),2);
+		for(int i=0;i<feature1.vals.length;i++){
+			sum = Math.pow(feature1.vals[i]-feature2.vals[i],2);
 		}
 		double distance = Math.sqrt(sum);
 		return distance;
 	}
 	
-	public List<Scores> kNearestNeighbor(List<Double> testFeatures, List<List<Double>> trainFeatures){
+	public List<Scores> kNearestNeighbor(bwcFeature testFeatures, List<bwcFeature> trainFeatures){
 		List<Scores> rankedPages = new ArrayList<Scores>();
+		int page = 0;
+		double score = 0;
 		for(int i=0;i<trainFeatures.size();i++){
-			rankedPages.get(i).score = euclidianDistance(testFeatures,trainFeatures.get(i));
-			rankedPages.get(i).page = i;
+			rankedPages.add(new Scores(euclidianDistance(testFeatures,trainFeatures.get(i)),i));
 		}
 		Collections.sort(rankedPages);
 		return rankedPages;

@@ -8,4 +8,9 @@ public class Scores implements Comparable<Scores>{
 	public int compareTo(Scores o1) {
 		return (this.score>o1.score ? -1 : (this.score==o1.score ? 0 : 1));
 	}
+	
+	public Scores(double s, int p){
+		page = p;
+		score = s;
+	}
 }

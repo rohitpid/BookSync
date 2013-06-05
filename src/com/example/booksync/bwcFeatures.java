@@ -9,7 +9,7 @@ import org.opencv.core.Rect;
 public class bwcFeatures {
 
 	
-	private List<bwcFeature> features;
+	private ArrayList<bwcFeature> features;
 	private textBoxData data;
 	
 	/////////////////
@@ -24,7 +24,7 @@ public class bwcFeatures {
 		features = new ArrayList<bwcFeature>();
 	}
 	
-	public List<bwcFeature> getFeatures(textBoxData tData){
+	public ArrayList<bwcFeature> getFeatures(textBoxData tData){
 		data = tData;
 		features = new ArrayList<bwcFeature>();
 		
@@ -48,14 +48,14 @@ public class bwcFeatures {
 		int k = 0;
 		int i = 0;
 		
-		List<Float> above = new ArrayList<Float>();
-		List<Float> below = new ArrayList<Float>();
+		List<Double> above;
+		List<Double> below;
 		List<Integer> aboveX = new ArrayList<Integer>();
 		List<Integer> belowX = new ArrayList<Integer>();
 	
 		bwcFeature featureIntermed;
 		
-		float vals[] = {0,0,0,0,0};
+		double vals[] = {0,0,0,0,0};
 		
 		for (k = 0;k < data.wordBoxes.size();k++){
 			box = data.wordBoxes.get(k);
@@ -63,6 +63,8 @@ public class bwcFeatures {
 			yMin = box.y;
 			xMax = box.x + box.width;
 			yMax = box.y + box.height;
+			below = new ArrayList<Double>();
+			above = new ArrayList<Double>();
 			
 			//featureIntermed = new bwcFeature();
 			for (i = 0; (i < data.wordBoxes.size()) && i!=k;i++){
@@ -72,18 +74,18 @@ public class bwcFeatures {
 				if ( (Math.abs(yMax-boxI.y)<1.5*(double)h) && (xMin<=(boxI.x+boxI.width) && xMax>=boxI.x) ) {
 					if (above.size() == 0){
 						aboveX.add(boxI.x);
-						above.add((float)boxI.width/(float)boxI.height);
+						above.add((double)boxI.width/(double)boxI.height);
 					}
 					else if (above.size() == 1){
 						if (aboveX.get(0) < boxI.x){
 							aboveX.add(boxI.x);
-							above.add((float)boxI.width/(float)boxI.height);
+							above.add((double)boxI.width/(double)boxI.height);
 						}
 						else{
 							aboveX.add(aboveX.get(0));
 							above.add(above.get(0));
 							aboveX.set(0, boxI.x);
-							above.set(0, (float)boxI.width/(float)boxI.height);
+							above.set(0, (double)boxI.width/(double)boxI.height);
 						}
 						 
 					}
@@ -93,29 +95,29 @@ public class bwcFeatures {
 							aboveX.set(1, aboveX.get(0));
 							above.set(1,above.get(0));
 							aboveX.set(0, boxI.x);
-							above.set(0, (float)boxI.width/(float)boxI.height);
+							above.set(0, (double)boxI.width/(double)boxI.height);
 						}
 						else if (aboveX.get(1) < boxI.x){
 							aboveX.set(1, boxI.x);
-							above.set(1,(float)boxI.width/(float)boxI.height);
+							above.set(1,(double)boxI.width/(double)boxI.height);
 						}
 					}
 				}
 				if ( (Math.abs(yMin-boxI.y-boxI.height)<1.5*(double)h) && (xMin<=(boxI.x+boxI.width) && xMax>=boxI.x) ) {
 					if (below.size() == 0){
 						belowX.add(boxI.x);
-						below.add((float)boxI.width/(float)boxI.height);
+						below.add((double)boxI.width/(double)boxI.height);
 					}
 					else if (below.size() == 1){
 						if (belowX.get(0) < boxI.x){
 							belowX.add(boxI.x);
-							below.add((float)boxI.width/(float)boxI.height);
+							below.add((double)boxI.width/(double)boxI.height);
 						}
 						else{
 							belowX.add(belowX.get(0));
 							below.add(below.get(0));
 							belowX.set(0, boxI.x);
-							below.set(0, (float)boxI.width/(float)boxI.height);
+							below.set(0, (double)boxI.width/(double)boxI.height);
 						}
 						 
 					}
@@ -123,13 +125,13 @@ public class bwcFeatures {
 						
 						if (belowX.get(0) < boxI.x){
 							belowX.set(1, belowX.get(0));
-							below.set(1,above.get(0));
+							below.set(1,below.get(0));
 							belowX.set(0, boxI.x);
-							below.set(0, (float)boxI.width/(float)boxI.height);
+							below.set(0, (double)boxI.width/(double)boxI.height);
 						}
 						else if (below.get(1) < boxI.x){
 							belowX.set(1, boxI.x);
-							below.set(1,(float)boxI.width/(float)boxI.height);
+							below.set(1,(double)boxI.width/(double)boxI.height);
 						}
 					}
 				}
@@ -142,6 +144,7 @@ public class bwcFeatures {
 				vals[2] = box.width/box.height;
 				vals[3] = below.get(0);
 				vals[4] = below.get(1);
+				
 				features.add(new bwcFeature(vals.clone(),new Point(xMin,yMin)));
 				
 			}
